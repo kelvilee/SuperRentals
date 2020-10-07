@@ -6,10 +6,15 @@ import { hbs } from "ember-cli-htmlbars";
 module("Integration | Component | rental", function (hooks) {
   setupRenderingTest(hooks);
 
+  hooks.beforeEach(function () {
+    this.owner.setupRouter();
+  });
+
   test("it renders information about a rental property", async function (assert) {
     await render(hbs`<Rental />`);
     this.setProperties({
       rental: {
+        id: "grand-old-mansion",
         title: "Grand Old Mansion",
         owner: "Veruca Salt",
         city: "San Francisco",
@@ -30,6 +35,9 @@ module("Integration | Component | rental", function (hooks) {
     await render(hbs`<Rental @rental={{this.rental}} />`);
 
     assert.dom("article").hasClass("rental");
+    assert
+      .dom("article h3 a")
+      .hasAttribute("href", "/rentals/grand-old-mansion");
     assert.dom("article h3").hasText("Grand Old Mansion");
     assert.dom("article .detail.owner").includesText("Veruca Salt");
     assert.dom("article .detail.type").includesText("Standalone");
